@@ -6,6 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		18CEF9512E75F18300512C74 /* ArticleDatabase.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 18CEF94F2E75F18300512C74 /* ArticleDatabase.xcdatamodeld */; };
+		18CEF9D42E75F22800512C74 /* ArticleEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CEF9D32E75F22800512C74 /* ArticleEntity+CoreDataProperties.swift */; };
+		18CEF9D52E75F22800512C74 /* ArticleEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CEF9D22E75F22800512C74 /* ArticleEntity+CoreDataClass.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		183B465C2E7560E40086D8AB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,6 +33,9 @@
 		183B46492E7560E20086D8AB /* MultiDevBootcamp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MultiDevBootcamp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		183B465B2E7560E40086D8AB /* MultiDevBootcampTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MultiDevBootcampTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		183B46652E7560E40086D8AB /* MultiDevBootcampUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MultiDevBootcampUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		18CEF9502E75F18300512C74 /* ArticleDatabase.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ArticleDatabase.xcdatamodel; sourceTree = "<group>"; };
+		18CEF9D22E75F22800512C74 /* ArticleEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ArticleEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
+		18CEF9D32E75F22800512C74 /* ArticleEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ArticleEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -75,6 +84,9 @@
 		183B46402E7560E20086D8AB = {
 			isa = PBXGroup;
 			children = (
+				18CEF9D22E75F22800512C74 /* ArticleEntity+CoreDataClass.swift */,
+				18CEF9D32E75F22800512C74 /* ArticleEntity+CoreDataProperties.swift */,
+				18CEF94F2E75F18300512C74 /* ArticleDatabase.xcdatamodeld */,
 				183B464B2E7560E20086D8AB /* MultiDevBootcamp */,
 				183B465E2E7560E40086D8AB /* MultiDevBootcampTests */,
 				183B46682E7560E40086D8AB /* MultiDevBootcampUITests */,
@@ -236,6 +248,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18CEF9512E75F18300512C74 /* ArticleDatabase.xcdatamodeld in Sources */,
+				18CEF9D42E75F22800512C74 /* ArticleEntity+CoreDataProperties.swift in Sources */,
+				18CEF9D52E75F22800512C74 /* ArticleEntity+CoreDataClass.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -558,6 +573,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		18CEF94F2E75F18300512C74 /* ArticleDatabase.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				18CEF9502E75F18300512C74 /* ArticleDatabase.xcdatamodel */,
+			);
+			currentVersion = 18CEF9502E75F18300512C74 /* ArticleDatabase.xcdatamodel */;
+			path = ArticleDatabase.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 183B46412E7560E20086D8AB /* Project object */;
 }
