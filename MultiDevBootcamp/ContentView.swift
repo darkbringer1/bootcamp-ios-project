@@ -9,48 +9,22 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
-
+    // Simple dependency setup for Lesson 2. We'll replace with a proper container later.
+    private let storage = UserDefaultsNewsStorage()
+    private let service = BasicNewsService()
+    
     var body: some View {
-        NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-                    }
-                }
-                .onDelete(perform: deleteItems)
+        TabView {
+            NavigationStack {
+                // TODO: Lesson step — wire correct service and map real API fields
+                NewsListView(viewModel: NewsListViewModel(service: service, storage: storage))
             }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
+            .tabItem { Label("News", systemImage: "newspaper")  }
+            
+            NavigationStack {
+                FavoritesView(viewModel: FavoritesViewModel(storage: storage))
             }
-        } detail: {
-            Text("Select an item")
-        }
-    }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
-            }
+            .tabItem { Label("Favorites", systemImage: "star") }
         }
     }
 }
