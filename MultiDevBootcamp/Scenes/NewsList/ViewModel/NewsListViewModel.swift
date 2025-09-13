@@ -29,16 +29,32 @@ final class NewsListViewModel: ObservableObject {
         }
         
         // Refresh from network
+        do {
+            let result = try await service.fetchLatest(
+                query: nil,
+                page: 0,
+                pageSize: 10
+            )
+            
+            articles = result
+            try storage.saveArticles(articles)
+        } catch {
+            print("Failed to fetch articles: \(error)")
+        }
     }
 
     func toggleFavorite(for article: NewsArticle) {
         // Toggle favorite status in storage
+        do {
+            try storage.toggleFavorite(id: article.id)
+        } catch {
+            print("Failed to toggle favorite: \(error)")
+        }
+        objectWillChange.send()
     }
 
     func isFavorite(_ article: NewsArticle) -> Bool {
         // Check if article is favorite
-        return false
+        storage.isFavorite(id: article.id)
     }
 }
-
-

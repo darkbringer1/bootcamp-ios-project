@@ -33,7 +33,9 @@ struct FavoritesView: View {
             }
         }
         .navigationTitle("Favorites")
-        .onAppear { viewModel.reload() }
+        .onAppear {
+            viewModel.reload()
+        }
     }
 }
 

@@ -28,11 +28,12 @@ final class UserDefaultsArticlesDataManager: ArticlesDataManaging {
 
     func saveArticles(_ articles: [NewsArticle]) throws {
         // save articles array
+        try defaultsManager.setCodable(articles, forKey: articlesKey)
     }
 
     func loadArticles() throws -> [NewsArticle] {
         // load articles array
-        return []
+        return defaultsManager.codable(forKey: articlesKey)
     }
 }
 

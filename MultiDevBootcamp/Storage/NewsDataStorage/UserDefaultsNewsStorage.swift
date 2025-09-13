@@ -33,12 +33,16 @@ final class UserDefaultsNewsStorage: NewsStorage {
     // MARK: - Favorites (ids only)
     func toggleFavorite(id: String) throws {
         var set = allFavoriteIDs()
-        if set.contains(id) { set.remove(id) } else { set.insert(id) }
+        if set.contains(id) {
+            set.remove(id)
+        } else {
+            set.insert(id)
+        }
         try defaultsManager.setCodable(Array(set), forKey: favoritesKey)
     }
     
     func isFavorite(id: String) -> Bool {
-        allFavoriteIDs().contains(id)
+        allFavoriteIDs().contains(id) // O(1) lookup
     }
     
     func allFavoriteIDs() -> Set<String> {
