@@ -76,5 +76,6 @@ final class ReadLaterCoreDataManager: ReadLaterCoreDataManagerProtocol {
         for article in articles {
             coreDataManager.context.delete(article)
         }
+        coreDataManager.saveContext()
     }
 }
