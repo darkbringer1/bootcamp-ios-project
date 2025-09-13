@@ -13,21 +13,23 @@ protocol ReadLaterCoreDataManagerProtocol {
     func fetchAll() -> [NewsArticle]
     func delete(_ item: NewsArticle)
     func deleteAll()
+    func checkIfSaved(_ id: String) -> Bool
 }
 
 final class ReadLaterCoreDataManager: ReadLaterCoreDataManagerProtocol {
 
     var coreDataManager: CoreDataManager
-
+    private var entities: [ArticleEntity] = []
+    
     init() {
         coreDataManager = CoreDataManager.shared
     }
     
     func save(_ items: [NewsArticle]) {
-        let articles = fetchAll()
-        
+        entities = coreDataManager.fetch(ArticleEntity.self)
+
         for item in items {
-            if articles.contains(where: { $0.url == item.url }) {
+            if entities.contains(where: { $0.articleUrl == item.url?.absoluteString }) {
                 continue
             }
             let object = ArticleEntity(context: coreDataManager.context)
@@ -45,7 +47,7 @@ final class ReadLaterCoreDataManager: ReadLaterCoreDataManagerProtocol {
     }
 
     func fetchAll() -> [NewsArticle] {
-        let entities = coreDataManager.fetch(ArticleEntity.self)
+        entities = coreDataManager.fetch(ArticleEntity.self)
         
         return entities.map { entity in
             NewsArticle(
@@ -60,20 +62,24 @@ final class ReadLaterCoreDataManager: ReadLaterCoreDataManagerProtocol {
             )
         }
     }
+    
+    func checkIfSaved(_ id: String) -> Bool {
+        return entities.contains(where: { $0.articleUrl == id })
+    }
 
     func delete(_ item: NewsArticle) {
-        let articles = coreDataManager.fetch(ArticleEntity.self)
+        entities = coreDataManager.fetch(ArticleEntity.self)
         
-        if let articleToDelete = articles.first(where: { $0.articleUrl == item.url?.absoluteString }) {
+        if let articleToDelete = entities.first(where: { $0.articleUrl == item.url?.absoluteString }) {
             coreDataManager.context.delete(articleToDelete)
             coreDataManager.saveContext()
         }
     }
 
     func deleteAll() {
-        let articles = coreDataManager.fetch(ArticleEntity.self)
+        entities = coreDataManager.fetch(ArticleEntity.self)
         
-        for article in articles {
+        for article in entities {
             coreDataManager.context.delete(article)
         }
         coreDataManager.saveContext()

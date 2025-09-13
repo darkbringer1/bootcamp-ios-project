@@ -7,6 +7,7 @@ import SwiftUI
 struct ArticleRowView: View {
     let article: NewsArticle
     @Binding var isFavorite: Bool
+    @Binding var isReadLater: Bool
     
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
@@ -47,20 +48,31 @@ struct ArticleRowView: View {
                 }
             }
             Spacer(minLength: 8)
-            Button {
-                isFavorite.toggle()
-            } label: {
-                Image(systemName: isFavorite ? "star.fill" : "star")
-                    .foregroundStyle(isFavorite ? .yellow : .gray)
+            VStack(alignment: .trailing) {
+                Button {
+                    isFavorite.toggle()
+                } label: {
+                    Image(systemName: isFavorite ? "star.fill" : "star")
+                        .foregroundStyle(isFavorite ? .yellow : .gray)
+                }
+                .buttonStyle(.plain)
+                
+                Button {
+                    // read later flag
+                    isReadLater.toggle()
+                } label: {
+                    Image(systemName: "bookmark")
+                        .foregroundStyle(isReadLater ? .blue : .gray)
+                }
+                .buttonStyle(.plain)
             }
-            .buttonStyle(.plain)
         }
         .contentShape(Rectangle())
     }
 }
 
 #Preview {
-    ArticleRowView(article: .placeholder, isFavorite: .constant(true))
+    ArticleRowView(article: .placeholder, isFavorite: .constant(true), isReadLater: .constant(true))
         .padding()
 }
 

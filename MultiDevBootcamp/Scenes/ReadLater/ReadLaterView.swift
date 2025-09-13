@@ -1,13 +1,16 @@
 //
-//  NewsListView.swift
+//  ReadLaterView.swift
+//  MultiDevBootcamp
+//
+//  Created by dogukaan on 13.09.2025.
 //
 
 import SwiftUI
 
-struct NewsListView: View {
-    @StateObject private var viewModel: NewsListViewModel
+struct ReadLaterView: View {
+    @StateObject private var viewModel: ReadLaterViewModel
     
-    init(viewModel: NewsListViewModel) {
+    init(viewModel: ReadLaterViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
     
@@ -50,7 +53,7 @@ struct NewsListView: View {
                 ContentUnavailableView("No Articles", systemImage: "newspaper")
             }
         }
-        .navigationTitle("News")
+        .navigationTitle("Read Later")
         .task {
             await viewModel.refresh()
         }
@@ -61,14 +64,15 @@ struct NewsListView: View {
 }
 
 #Preview {
-    let articlesManager: ArticlesDataManaging = ReadLaterNewsStorage()
-    let vm = NewsListViewModel(
+    let articlesManager: ArticlesDataManaging? = ReadLaterNewsStorage()
+    let vm = ReadLaterViewModel(
         service: BasicNewsService(),
-        storage: UserDefaultsNewsStorage(articlesManager: articlesManager)
+        storage: UserDefaultsNewsStorage(
+            defaults: .standard,
+            articlesManager: articlesManager
+        )
     )
     return NavigationStack {
-        NewsListView(viewModel: vm)
+        ReadLaterView(viewModel: vm)
     }
 }
-
-

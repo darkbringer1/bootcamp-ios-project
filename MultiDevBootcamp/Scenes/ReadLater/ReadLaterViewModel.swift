@@ -1,42 +1,58 @@
 //
-//  FavoritesViewModel.swift
+//  ReadLaterViewModel.swift
+//  MultiDevBootcamp
+//
+//  Created by dogukaan on 13.09.2025.
 //
 
 import Foundation
 
 @MainActor
-final class FavoritesViewModel: ObservableObject {
+final class ReadLaterViewModel: ObservableObject {
+    // Input dependencies (swap later):
+    private let service: BasicNewsServiceProtocol
     private let storage: NewsStorage
     
-    @Published private(set) var favoriteArticles: [NewsArticle] = []
+    // UI state
+    @Published private(set) var articles: [NewsArticle] = []
+    @Published private(set) var isLoading: Bool = false
+    @Published private(set) var errorMessage: String? = nil
     
-    init(storage: NewsStorage) {
+    init(
+        service: BasicNewsServiceProtocol,
+        storage: NewsStorage
+    ) {
+        self.service = service
         self.storage = storage
-        // Preload from storage only
+        // Load cached articles from coreData
     }
     
-    func reload() {
-        // Load all articles and filter to favorites
+    func refresh() async {
+        isLoading = true
+        defer {
+            isLoading = false
+        }
+        
+        // Refresh from core data
         do {
-            let all = try storage.loadArticles()
-            favoriteArticles = all.filter { isFavorite($0) }
+            articles = try storage.loadArticles()
         } catch {
-            print("Failed to load articles: \(error)")
+            print("Failed to fetch articles: \(error)")
         }
     }
     
+    
+    
     func toggleFavorite(for article: NewsArticle) {
-        // Toggle favorite status and reload favorites
+        // Toggle favorite status in storage
         do {
             try storage.toggleFavorite(
                 id: article.url?.absoluteString ?? ""
             )
             toggleReadLater(for: article)
-
         } catch {
             print("Failed to toggle favorite: \(error)")
         }
-        reload()
         objectWillChange.send()
     }
     
@@ -52,10 +68,9 @@ final class FavoritesViewModel: ObservableObject {
     func toggleReadLater(for article: NewsArticle) {
         do {
             if isReadLater(article.id) {
-                //                try storage.
-                try storage.saveArticles([article])
+//                try storage.
             } else {
-                // delete
+                try storage.saveArticles([article])
             }
         } catch {
             print("Failed to toggle read later: \(error)")

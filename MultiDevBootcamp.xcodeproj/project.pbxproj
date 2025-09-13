@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		18CEF9512E75F18300512C74 /* ArticleDatabase.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 18CEF94F2E75F18300512C74 /* ArticleDatabase.xcdatamodeld */; };
-		18CEF9D42E75F22800512C74 /* ArticleEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CEF9D32E75F22800512C74 /* ArticleEntity+CoreDataProperties.swift */; };
-		18CEF9D52E75F22800512C74 /* ArticleEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CEF9D22E75F22800512C74 /* ArticleEntity+CoreDataClass.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -249,8 +247,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				18CEF9512E75F18300512C74 /* ArticleDatabase.xcdatamodeld in Sources */,
-				18CEF9D42E75F22800512C74 /* ArticleEntity+CoreDataProperties.swift in Sources */,
-				18CEF9D52E75F22800512C74 /* ArticleEntity+CoreDataClass.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

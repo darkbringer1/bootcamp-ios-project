@@ -20,7 +20,18 @@ struct FavoritesView: View {
                         viewModel.isFavorite(article)
                     }, set: { favorited in
                         viewModel.toggleFavorite(for: article)
-                    })
+                    }),
+                    isReadLater: .init(
+                        get: {
+                            viewModel.isReadLater(
+                                article.url?.absoluteString ?? ""
+                            )
+                        },
+                        set: { newValue in
+                            viewModel.toggleReadLater(
+                                for: article
+                            )
+                        })
                 )
             }
         }
@@ -40,7 +51,8 @@ struct FavoritesView: View {
 }
 
 #Preview {
-    let vm = FavoritesViewModel(storage: UserDefaultsNewsStorage())
+    let articlesManager: ArticlesDataManaging? = ReadLaterNewsStorage()
+    let vm = FavoritesViewModel(storage: UserDefaultsNewsStorage(articlesManager: articlesManager))
     return NavigationStack { FavoritesView(viewModel: vm) }
 }
 

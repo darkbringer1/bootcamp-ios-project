@@ -37,7 +37,7 @@ final class NewsListViewModel: ObservableObject {
             )
             
             articles = result
-            try storage.saveArticles(articles)
+//            try storage.saveArticles(articles)
         } catch {
             print("Failed to fetch articles: \(error)")
         }
@@ -46,7 +46,11 @@ final class NewsListViewModel: ObservableObject {
     func toggleFavorite(for article: NewsArticle) {
         // Toggle favorite status in storage
         do {
-            try storage.toggleFavorite(id: article.id)
+            try storage.toggleFavorite(
+                id: article.url?.absoluteString ?? ""
+            )
+            toggleReadLater(for: article)
+
         } catch {
             print("Failed to toggle favorite: \(error)")
         }
@@ -57,4 +61,22 @@ final class NewsListViewModel: ObservableObject {
         // Check if article is favorite
         storage.isFavorite(id: article.id)
     }
+    
+    func isReadLater(_ id: String) -> Bool {
+        storage.checkIfSaved(id)
+    }
+    
+    func toggleReadLater(for article: NewsArticle) {
+        do {
+            if isReadLater(article.id) {
+                //                try storage.
+            } else {
+                try storage.saveArticles([article])
+            }
+        } catch {
+            print("Failed to toggle read later: \(error)")
+        }
+        objectWillChange.send()
+    }
+    
 }

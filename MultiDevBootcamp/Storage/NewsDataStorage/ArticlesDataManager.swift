@@ -10,6 +10,7 @@ import Foundation
 protocol ArticlesDataManaging {
     func saveArticles(_ articles: [NewsArticle]) throws
     func loadArticles() throws -> [NewsArticle]
+    func checkIfSaved(_ id: String) -> Bool
 }
 
 // MARK: - Concrete UserDefaults-backed implementation
@@ -34,6 +35,10 @@ final class UserDefaultsArticlesDataManager: ArticlesDataManaging {
     func loadArticles() throws -> [NewsArticle] {
         // load articles array
         return defaultsManager.codable(forKey: articlesKey)
+    }
+    
+    func checkIfSaved(_ id: String) -> Bool {
+        return defaultsManager.codable(forKey: articlesKey).contains(where: { $0.url?.absoluteString == id } )
     }
 }
 

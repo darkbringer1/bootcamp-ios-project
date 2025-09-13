@@ -17,4 +17,5 @@ protocol NewsStorage {
     func toggleFavorite(id: String) throws
     func isFavorite(id: String) -> Bool
     func allFavoriteIDs() -> Set<String>
+    func checkIfSaved(_ id: String) -> Bool
 }

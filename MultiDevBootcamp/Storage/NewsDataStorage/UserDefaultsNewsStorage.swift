@@ -14,10 +14,10 @@ final class UserDefaultsNewsStorage: NewsStorage {
     // Stores favorite article ids as JSON-encoded array of String via UserDefaults
     private let favoritesKey: DefaultsCodableKey<[String]>
     
-    init(defaults: UserDefaults = .standard, articlesManager: ArticlesDataManaging? = nil) {
+    init(defaults: UserDefaults = .standard, articlesManager: ArticlesDataManaging?) {
         self.defaultsManager = UserDefaultsManager(defaults: defaults)
         // Allow injecting a custom articles manager; default to UserDefaults-backed one
-        self.articlesManager = articlesManager ?? UserDefaultsArticlesDataManager(defaults: defaults)
+        self.articlesManager = articlesManager!
         self.favoritesKey = DefaultsCodableKey<[String]>("news_favorites_v1", default: [])
     }
     
@@ -49,6 +49,8 @@ final class UserDefaultsNewsStorage: NewsStorage {
         let array: [String] = defaultsManager.codable(forKey: favoritesKey)
         return Set(array)
     }
+    
+    func checkIfSaved(_ id: String) -> Bool {
+        articlesManager.checkIfSaved(id)
+    }
 }
-
-
