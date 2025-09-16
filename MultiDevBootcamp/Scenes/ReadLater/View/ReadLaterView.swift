@@ -27,7 +27,7 @@ struct ReadLaterView: View {
                     isReadLater: .init(
                         get: {
                             viewModel.isReadLater(
-                                article.url?.absoluteString ?? ""
+                                article
                             )
                         },
                         set: { newValue in
@@ -54,6 +54,24 @@ struct ReadLaterView: View {
             }
         }
         .navigationTitle("Read Later")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                // add a delete all read later button
+                Button(action: {
+                    viewModel.deleteAllReadLater()
+                }) {
+                    // add a delete all read later button
+                    Button(action: {
+                        viewModel.deleteAllReadLater()
+                    }) {
+                        HStack {
+                            Text("Delete All")
+                            Image(systemName: "trash")
+                        }
+                    }
+                }
+            }
+        }
         .task {
             await viewModel.refresh()
         }
@@ -64,13 +82,10 @@ struct ReadLaterView: View {
 }
 
 #Preview {
-    let articlesManager: ArticlesDataManaging? = ReadLaterNewsStorage()
+    let articlesManager: NewsStorageProtocol = CoreDataNewsStorage()
     let vm = ReadLaterViewModel(
         service: BasicNewsService(),
-        storage: UserDefaultsNewsStorage(
-            defaults: .standard,
-            articlesManager: articlesManager
-        )
+        storage: articlesManager
     )
     return NavigationStack {
         ReadLaterView(viewModel: vm)

@@ -27,44 +27,68 @@ final class CoreDataManager: ObservableObject {
     // Keep a reference if you need to load stores again or create new contexts
     private let persistentContainer: NSPersistentContainer
     
-    // MARK: - Persistent Container (In-Memory for Skeleton)
+    // MARK: - Persistent Container
     private static func makePersistentContainer() -> NSPersistentContainer {
-        // Try to merge any model in the bundle. If none exist, fall back to an empty model.
-        let model = NSManagedObjectModel.mergedModel(from: [Bundle.main]) ?? NSManagedObjectModel()
-        
-        // Name kept as "ArticleEntity" to mirror NewsAPICase; you can rename later.
-        let container = NSPersistentContainer(name: "ArticleContainer", managedObjectModel: model)
-        let description = NSPersistentStoreDescription()
-        description.type = NSInMemoryStoreType
-        container.persistentStoreDescriptions = [description]
-        container.loadPersistentStores { _, error in
-            if let error {
-                debugPrint("CoreData in-memory store failed to load: \(error)")
-            }
+        // Load the ArticleDatabase model
+        guard let modelURL = Bundle.main.url(forResource: "ArticleDatabase", withExtension: "momd"),
+              let model = NSManagedObjectModel(contentsOf: modelURL)
+        else {
+            fatalError("Failed to load ArticleDatabase model")
         }
+        
+        let container = NSPersistentContainer(name: "ArticleDatabase", managedObjectModel: model)
+        
+        // Configure for persistent storage
+        let storeURL = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent(
+            "ArticleDatabase.sqlite")
+        let description = NSPersistentStoreDescription(url: storeURL)
+        description.type = NSSQLiteStoreType
+        description.shouldMigrateStoreAutomatically = true
+        description.shouldInferMappingModelAutomatically = true
+        
+        container.persistentStoreDescriptions = [description]
+        container.loadPersistentStores { storeDescription, error in
+            if let error = error as NSError? {
+                fatalError("Failed to load persistent store: \(error), \(error.userInfo)")
+            }
+            print("CoreData store loaded at: \(storeDescription.url?.absoluteString ?? "unknown")")
+        }
+        
+        // Enable automatic merging of changes from parent context
+        container.viewContext.automaticallyMergesChangesFromParent = true
+        
         return container
     }
     
     // MARK: - Saving
     func saveContext() {
         guard context.hasChanges else { return }
-        do { try context.save() } catch { debugPrint("CoreData save error: \(error)") }
+        do {
+            try context.save()
+        } catch {
+            debugPrint("CoreData save error: \(error)")
+        }
     }
     
     // MARK: - Fetching
     func fetch<T: NSManagedObject>(_ type: T.Type) -> [T] {
         do {
             if let fetched = try context.fetch(T.fetchRequest()) as? [T] { return fetched }
-        } catch { debugPrint("Fetch error for \(type): \(error)") }
+        } catch {
+            debugPrint("Fetch error for \(type): \(error)")
+        }
         return []
     }
     
-    func fetchWithPredicate<T: NSManagedObject>(_ type: T.Type, predicateKey: String, predicateValue: String) -> T? {
+    func fetchWithPredicate<T: NSManagedObject>(_ type: T.Type, predicateKey: String, predicateValue: String) -> [T]? {
         do {
             let request = T.fetchRequest()
             request.predicate = NSPredicate(format: "\(predicateKey) == %@", predicateValue)
-            if let fetched = try context.fetch(request) as? [T] { return fetched.first }
-        } catch { debugPrint("Fetch (predicate) error for \(type): \(error)") }
+            let fetched = try context.fetch(request) as? [T]
+            return fetched
+        } catch {
+            debugPrint("Fetch (predicate) error for \(type): \(error)")
+        }
         return nil
     }
     
@@ -74,5 +98,3 @@ final class CoreDataManager: ObservableObject {
         saveContext()
     }
 }
-
-

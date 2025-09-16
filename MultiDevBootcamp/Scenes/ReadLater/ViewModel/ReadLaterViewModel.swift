@@ -1,11 +1,14 @@
 //
-//  NewsListViewModel.swift
+//  ReadLaterViewModel.swift
+//  MultiDevBootcamp
+//
+//  Created by dogukaan on 13.09.2025.
 //
 
 import Foundation
 
 @MainActor
-final class NewsListViewModel: ObservableObject {
+final class ReadLaterViewModel: ObservableObject {
     // Input dependencies (swap later):
     private let service: BasicNewsServiceProtocol
     private let storage: NewsStorageProtocol
@@ -15,11 +18,13 @@ final class NewsListViewModel: ObservableObject {
     @Published private(set) var isLoading: Bool = false
     @Published private(set) var errorMessage: String? = nil
     
-    init(service: BasicNewsServiceProtocol, storage: NewsStorageProtocol) {
+    init(
+        service: BasicNewsServiceProtocol,
+        storage: NewsStorageProtocol
+    ) {
         self.service = service
         self.storage = storage
-        // Load cached articles initially
-        self.articles = (try? storage.loadArticles()) ?? []
+        // Load cached articles from coreData
     }
     
     func refresh() async {
@@ -28,41 +33,26 @@ final class NewsListViewModel: ObservableObject {
             isLoading = false
         }
         
-        // Refresh from network
+        // Refresh read later articles from core data
         do {
-            let result = try await service.fetchLatest(
-                query: nil,
-                page: 0,
-                pageSize: 10
-            )
-            
-            // Save articles to CoreData (preserving existing flags)
-            try storage.saveArticles(result)
-            
-            // Reload articles from CoreData to get the correct flags
-            articles = try storage.loadArticles()
+            articles = try storage.loadReadLaterArticles()
         } catch {
-            errorMessage = error.localizedDescription
-            print("Failed to fetch articles: \(error)")
+            print("Failed to fetch read later articles: \(error)")
         }
     }
     
     func toggleFavorite(for article: NewsArticle) {
-        // First, ensure the article is saved to CoreData
+        // Toggle favorite status in storage
         do {
-            // Save the article if it doesn't exist
-            if !storage.isArticleSaved(article.url?.absoluteString ?? article.id) {
-                try storage.saveArticles([article])
-            }
-            // Toggle favorite status in storage
             try storage.toggleFavorite(
                 id: article.url?.absoluteString ?? article.id
             )
+            // Refresh the list after toggling
+            Task { await refresh() }
         } catch {
             errorMessage = error.localizedDescription
             print("Failed to toggle favorite: \(error)")
         }
-        objectWillChange.send()
     }
     
     func toggleReadLater(for article: NewsArticle) {
@@ -73,11 +63,12 @@ final class NewsListViewModel: ObservableObject {
             }
             // Then toggle the read later status
             try storage.toggleReadLater(id: article.url?.absoluteString ?? article.id)
+            // Refresh the list after toggling
+            Task { await refresh() }
         } catch {
             errorMessage = error.localizedDescription
             print("Failed to toggle read later: \(error)")
         }
-        objectWillChange.send()
     }
     
     func isFavorite(_ article: NewsArticle) -> Bool {
@@ -86,7 +77,23 @@ final class NewsListViewModel: ObservableObject {
     }
     
     func isReadLater(_ article: NewsArticle) -> Bool {
-        // Check if article is marked as read later
         storage.isArticleSaved(article.url?.absoluteString ?? article.id)
+    }
+    
+    func deleteArticle(_ article: NewsArticle) {
+        do {
+            try storage.deleteArticle(id: article.url?.absoluteString ?? article.id)
+            // Refresh the list after deletion
+            Task { await refresh() }
+        } catch {
+            errorMessage = error.localizedDescription
+            print("Failed to delete article: \(error)")
+        }
+    }
+    
+    func deleteAllReadLater() {
+        for article in articles {
+            deleteArticle(article)
+        }
     }
 }

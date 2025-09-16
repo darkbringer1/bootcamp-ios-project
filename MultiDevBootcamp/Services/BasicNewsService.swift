@@ -39,7 +39,7 @@ final class BasicNewsService: BasicNewsServiceProtocol {
             URLQueryItem(name: "page", value: String(page)),
             URLQueryItem(name: "pageSize", value: String(pageSize)),
             // You can add more parameters like country, category, etc.
-             URLQueryItem(name: "country", value: "us")
+            URLQueryItem(name: "country", value: "us")
         ]
         if let q = query, !q.isEmpty { queryItems.append(URLQueryItem(name: "q", value: q)) }
         // Keep it simple for now; you can add more filters later

@@ -24,7 +24,7 @@ struct NewsListView: View {
                     isReadLater: .init(
                         get: {
                             viewModel.isReadLater(
-                                article.url?.absoluteString ?? ""
+                                article
                             )
                         },
                         set: { newValue in
@@ -61,10 +61,10 @@ struct NewsListView: View {
 }
 
 #Preview {
-    let articlesManager: ArticlesDataManaging = ReadLaterNewsStorage()
+    let articlesManager: NewsStorageProtocol = CoreDataNewsStorage()
     let vm = NewsListViewModel(
         service: BasicNewsService(),
-        storage: UserDefaultsNewsStorage(articlesManager: articlesManager)
+        storage: articlesManager
     )
     return NavigationStack {
         NewsListView(viewModel: vm)

@@ -24,7 +24,7 @@ struct FavoritesView: View {
                     isReadLater: .init(
                         get: {
                             viewModel.isReadLater(
-                                article.url?.absoluteString ?? ""
+                                article
                             )
                         },
                         set: { newValue in
@@ -36,23 +36,35 @@ struct FavoritesView: View {
             }
         }
         .refreshable {
-            viewModel.reload()
+            Task {
+                await viewModel.refresh()
+            }
         }
         .overlay(alignment: .center) {
-            if viewModel.favoriteArticles.isEmpty {
-                ContentUnavailableView("No Favorites", systemImage: "star")
+            if viewModel.isLoading {
+                ProgressView("Loading…")
+            } else if let message = viewModel.errorMessage, viewModel.favoriteArticles.isEmpty {
+                VStack(spacing: 8) {
+                    Image(systemName: "exclamationmark.triangle")
+                    Text(message)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+                .padding()
+            } else if viewModel.favoriteArticles.isEmpty {
+                ContentUnavailableView("No Articles", systemImage: "newspaper")
             }
         }
         .navigationTitle("Favorites")
-        .onAppear {
-            viewModel.reload()
+        .task {
+            await viewModel.refresh()
         }
     }
 }
 
 #Preview {
-    let articlesManager: ArticlesDataManaging? = ReadLaterNewsStorage()
-    let vm = FavoritesViewModel(storage: UserDefaultsNewsStorage(articlesManager: articlesManager))
+    let articlesManager: NewsStorageProtocol = CoreDataNewsStorage()
+    let vm = FavoritesViewModel(storage: articlesManager)
     return NavigationStack { FavoritesView(viewModel: vm) }
 }
 

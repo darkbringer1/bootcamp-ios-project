@@ -18,6 +18,7 @@ struct NewsArticle: Identifiable, Codable, Equatable {
     let publishedAt: Date?
     let sourceName: String?
     var isFavorite: Bool = false // not from API, managed locally
+    var isReadLater: Bool = false  // not from API, managed locally
 }
 
 // MARK: - API mapping scaffolding
