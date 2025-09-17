@@ -1,0 +1,15 @@
+{
+  "originHash" : "c8a609a9408e19104d61df95b5814443c907a39295e7e405bb30a1ece99480c3",
+  "pins" : [
+    {
+      "identity" : "buddiesnetwork",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/darkbringer1/BuddiesNetwork.git",
+      "state" : {
+        "revision" : "5ba685d3b228efe552604f2050ae5064f5555337",
+        "version" : "0.0.6"
+      }
+    }
+  ],
+  "version" : 3
+}

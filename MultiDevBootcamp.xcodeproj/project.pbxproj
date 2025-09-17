@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		18CEF9512E75F18300512C74 /* ArticleDatabase.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 18CEF94F2E75F18300512C74 /* ArticleDatabase.xcdatamodeld */; };
+		18E243D32E79A94A006956EC /* BuddiesNetwork in Frameworks */ = {isa = PBXBuildFile; productRef = 18E243D22E79A94A006956EC /* BuddiesNetwork */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18E243D32E79A94A006956EC /* BuddiesNetwork in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -122,6 +124,7 @@
 			);
 			name = MultiDevBootcamp;
 			packageProductDependencies = (
+				18E243D22E79A94A006956EC /* BuddiesNetwork */,
 			);
 			productName = MultiDevBootcamp;
 			productReference = 183B46492E7560E20086D8AB /* MultiDevBootcamp.app */;
@@ -205,6 +208,9 @@
 			);
 			mainGroup = 183B46402E7560E20086D8AB;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				18E243D12E79A94A006956EC /* XCRemoteSwiftPackageReference "BuddiesNetwork" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 183B464A2E7560E20086D8AB /* Products */;
 			projectDirPath = "";
@@ -569,6 +575,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		18E243D12E79A94A006956EC /* XCRemoteSwiftPackageReference "BuddiesNetwork" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/darkbringer1/BuddiesNetwork.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.0.6;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		18E243D22E79A94A006956EC /* BuddiesNetwork */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 18E243D12E79A94A006956EC /* XCRemoteSwiftPackageReference "BuddiesNetwork" */;
+			productName = BuddiesNetwork;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		18CEF94F2E75F18300512C74 /* ArticleDatabase.xcdatamodeld */ = {

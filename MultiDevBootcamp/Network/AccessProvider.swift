@@ -13,6 +13,3 @@ final class AccessProvider: AccessProviderProtocol {
         ProcessInfo.processInfo.environment["NEWS_API_KEY"]
     }
 }
-
-
-
