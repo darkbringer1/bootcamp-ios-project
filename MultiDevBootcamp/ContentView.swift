@@ -21,7 +21,7 @@ struct ContentView: View {
             NavigationStack {
                 NewsListView(
                     viewModel: NewsListViewModel(
-                        service: service,
+                        service: NewsAPIClient.shared,
                         storage: storage
                     )
                 )

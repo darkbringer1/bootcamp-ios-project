@@ -10,7 +10,7 @@ import Foundation
 // MARK: - Domain model for a news item
 struct NewsArticle: Identifiable, Codable, Equatable {
     // Unique id for list diffing and favorites
-    let id: String
+    var id: String?
     let title: String
     let description: String?
     let url: URL?

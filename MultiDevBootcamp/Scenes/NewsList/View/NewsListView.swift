@@ -60,15 +60,15 @@ struct NewsListView: View {
     }
 }
 
-#Preview {
-    let articlesManager: NewsStorageProtocol = CoreDataNewsStorage()
-    let vm = NewsListViewModel(
-        service: BasicNewsService(),
-        storage: articlesManager
-    )
-    return NavigationStack {
-        NewsListView(viewModel: vm)
-    }
-}
-
-
+//#Preview {
+//    let articlesManager: NewsStorageProtocol = CoreDataNewsStorage()
+//    let vm = NewsListViewModel(
+//        service: BasicNewsService(),
+//        storage: articlesManager
+//    )
+//    return NavigationStack {
+//        NewsListView(viewModel: vm)
+//    }
+//}
+//
+//

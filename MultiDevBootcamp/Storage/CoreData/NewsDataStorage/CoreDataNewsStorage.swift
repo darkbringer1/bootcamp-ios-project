@@ -25,7 +25,7 @@ final class CoreDataNewsStorage: NewsStorageProtocol {
             let articleId = article.url?.absoluteString ?? article.id
             
             // Check if article already exists
-            if let existingEntity = fetchArticleEntity(byUrl: articleId) {
+            if let existingEntity = fetchArticleEntity(byUrl: articleId ?? UUID().uuidString) {
                 // Update existing article, preserving favorite and read later flags
                 print(
                     "Updating existing article: \(articleId), preserving flags - Favorite: \(existingEntity.isFavorite), ReadLater: \(existingEntity.isReadLater)"

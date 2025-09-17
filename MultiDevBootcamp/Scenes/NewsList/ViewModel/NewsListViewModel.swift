@@ -3,11 +3,12 @@
 //
 
 import Foundation
+import BuddiesNetwork
 
 @MainActor
 final class NewsListViewModel: ObservableObject {
     // Input dependencies (swap later):
-    private let service: BasicNewsServiceProtocol
+    private let service: NewsAPIClient
     private let storage: NewsStorageProtocol
     
     // UI state
@@ -15,7 +16,7 @@ final class NewsListViewModel: ObservableObject {
     @Published private(set) var isLoading: Bool = false
     @Published private(set) var errorMessage: String? = nil
     
-    init(service: BasicNewsServiceProtocol, storage: NewsStorageProtocol) {
+    init(service: NewsAPIClient, storage: NewsStorageProtocol) {
         self.service = service
         self.storage = storage
         // Load cached articles initially
@@ -27,36 +28,46 @@ final class NewsListViewModel: ObservableObject {
         defer {
             isLoading = false
         }
-        
-        // Refresh from network
+        await fetchLatest()
+    }
+    
+    func fetchLatest() async {
+        let request = LatestFetchRequest(
+            query: nil,
+            page: 1,
+            pageSize: 10,
+            country: "us"
+        )
         do {
-            let result = try await service.fetchLatest(
-                query: nil,
-                page: 0,
-                pageSize: 10
-            )
-            
-            // Save articles to CoreData (preserving existing flags)
-            try storage.saveArticles(result)
-            
-            // Reload articles from CoreData to get the correct flags
-            articles = try storage.loadArticles()
+            for try await response in service.watch(request, cachePolicy: .returnCacheDataAndFetch) {
+                articles = response.articles?.enumerated().compactMap { index, item in
+                    NewsArticle(
+                        id: (item.url ?? UUID().uuidString) + "_\(index)",
+                        title: item.title ?? "Untitled",
+                        description: item.description,
+                        url: item.url.flatMap(URL.init(string:)),
+                        imageUrl: item.urlToImage.flatMap(URL.init(string:)),
+                        publishedAt: item.publishedAt,
+                        sourceName: item.source?.name
+                    )
+                } ?? []
+            }
         } catch {
-            errorMessage = error.localizedDescription
-            print("Failed to fetch articles: \(error)")
+            print(error)
         }
+        
     }
     
     func toggleFavorite(for article: NewsArticle) {
         // First, ensure the article is saved to CoreData
         do {
             // Save the article if it doesn't exist
-            if !storage.isArticleSaved(article.url?.absoluteString ?? article.id) {
+            if !storage.isArticleSaved(article.url?.absoluteString ?? article.id ?? UUID().uuidString) {
                 try storage.saveArticles([article])
             }
             // Toggle favorite status in storage
             try storage.toggleFavorite(
-                id: article.url?.absoluteString ?? article.id
+                id: article.url?.absoluteString ?? article.id ?? UUID().uuidString
             )
         } catch {
             errorMessage = error.localizedDescription
@@ -68,11 +79,11 @@ final class NewsListViewModel: ObservableObject {
     func toggleReadLater(for article: NewsArticle) {
         do {
             // First, save the article if it's not already in storage
-            if !storage.isArticleSaved(article.url?.absoluteString ?? article.id) {
+            if !storage.isArticleSaved(article.url?.absoluteString ?? article.id ?? UUID().uuidString) {
                 try storage.saveArticles([article])
             }
             // Then toggle the read later status
-            try storage.toggleReadLater(id: article.url?.absoluteString ?? article.id)
+            try storage.toggleReadLater(id: article.url?.absoluteString ?? article.id ?? UUID().uuidString)
         } catch {
             errorMessage = error.localizedDescription
             print("Failed to toggle read later: \(error)")
@@ -82,11 +93,31 @@ final class NewsListViewModel: ObservableObject {
     
     func isFavorite(_ article: NewsArticle) -> Bool {
         // Check if article is favorite
-        storage.isFavorite(id: article.url?.absoluteString ?? article.id)
+        storage.isFavorite(id: article.url?.absoluteString ?? article.id ?? UUID().uuidString)
     }
     
     func isReadLater(_ article: NewsArticle) -> Bool {
         // Check if article is marked as read later
-        storage.isArticleSaved(article.url?.absoluteString ?? article.id)
+        storage.isArticleSaved(article.url?.absoluteString ?? article.id ?? UUID().uuidString)
+    }
+}
+
+extension NewsListViewModel {
+    
+    struct LatestFetchRequest: Requestable {
+        let query: String?
+        let page: Int
+        let pageSize: Int
+        let country: String?
+        
+        typealias Data = NewsDataResponse
+
+        func httpProperties() -> BuddiesNetwork.HTTPOperation<NewsListViewModel.LatestFetchRequest>.HTTPProperties {
+            .init(
+                url: EndpointManager.Path.topHeadlines.url(),
+                httpMethod: .get,
+                data: self
+            )
+        }
     }
 }

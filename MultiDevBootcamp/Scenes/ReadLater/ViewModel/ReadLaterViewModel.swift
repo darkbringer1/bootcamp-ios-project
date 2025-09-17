@@ -45,7 +45,7 @@ final class ReadLaterViewModel: ObservableObject {
         // Toggle favorite status in storage
         do {
             try storage.toggleFavorite(
-                id: article.url?.absoluteString ?? article.id
+                id: article.url?.absoluteString ?? article.id ?? UUID().uuidString
             )
             // Refresh the list after toggling
             Task { await refresh() }
@@ -58,11 +58,11 @@ final class ReadLaterViewModel: ObservableObject {
     func toggleReadLater(for article: NewsArticle) {
         do {
             // First, save the article if it's not already in storage
-            if !storage.isArticleSaved(article.url?.absoluteString ?? article.id) {
+            if !storage.isArticleSaved(article.url?.absoluteString ?? article.id ?? UUID().uuidString) {
                 try storage.saveArticles([article])
             }
             // Then toggle the read later status
-            try storage.toggleReadLater(id: article.url?.absoluteString ?? article.id)
+            try storage.toggleReadLater(id: article.url?.absoluteString ?? article.id ?? UUID().uuidString)
             // Refresh the list after toggling
             Task { await refresh() }
         } catch {
@@ -73,16 +73,16 @@ final class ReadLaterViewModel: ObservableObject {
     
     func isFavorite(_ article: NewsArticle) -> Bool {
         // Check if article is favorite
-        storage.isFavorite(id: article.url?.absoluteString ?? article.id)
+        storage.isFavorite(id: article.url?.absoluteString ?? article.id ?? UUID().uuidString)
     }
     
     func isReadLater(_ article: NewsArticle) -> Bool {
-        storage.isArticleSaved(article.url?.absoluteString ?? article.id)
+        storage.isArticleSaved(article.url?.absoluteString ?? article.id ?? UUID().uuidString)
     }
     
     func deleteArticle(_ article: NewsArticle) {
         do {
-            try storage.deleteArticle(id: article.url?.absoluteString ?? article.id)
+            try storage.deleteArticle(id: article.url?.absoluteString ?? article.id ?? UUID().uuidString)
             // Refresh the list after deletion
             Task { await refresh() }
         } catch {
