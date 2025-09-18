@@ -1,11 +1,9 @@
-### MultiDevBootcamp – Lesson 2 Skeleton (News + Favorites)
+### MultiDevBootcamp – News App Skeleton (Core Data + BuddiesNetwork)
 
-SwiftUI + MVVM skeleton for a practical bootcamp lesson. In this step we:
-- Fetch a basic news list (temporary simple request).
-- Persist articles and favorites with `UserDefaults`.
-- Show a News tab and a Favorites tab.
-
-This project is intentionally simple and swappable: later lessons will replace pieces (storage with Core Data, proper networking layer, etc.).
+SwiftUI + MVVM app demonstrating a modular architecture:
+- Fetch live headlines from NewsAPI using a `BuddiesNetwork`-powered client.
+- Persist articles, Favorites, and Read Later with Core Data.
+- Three tabs: News, Favorites, Read Later.
 
 ---
 
@@ -19,100 +17,97 @@ This project is intentionally simple and swappable: later lessons will replace p
 ### Getting Started
 1) Open `MultiDevBootcamp.xcodeproj` in Xcode.
 2) Select the `MultiDevBootcamp` scheme and your target device/simulator.
-3) (Optional but recommended) Set your NewsAPI key so the News tab fetches real data:
+3) Set your NewsAPI key so the News tab fetches real data:
    - Product → Scheme → Edit Scheme… → Run → Arguments → Environment Variables
    - Add key `NEWS_API_KEY` with your API key value
-   - The skeleton sends the key via `x-api-key` header to `top-headlines?country=us`.
+   - The network layer adds the key via `x-api-key` header to requests (e.g., `top-headlines?country=us`).
 4) Run.
 
-If you skip the API key, the app shows a few demo placeholder articles so it still works during class.
+Notes:
+- If the API key is missing or invalid, live fetching will fail; the News tab will only show any previously cached Core Data articles (if present).
+- You can later move the key into Keychain (see TODO in `ContentView.swift`).
 
 ---
 
 ### Project Structure (high-level)
-- `MultiDevBootcamp/MultiDevBootcampApp.swift`: App entry point.
+- `MultiDevBootcamp/MultiDevBootcampApp.swift`: App entry point; builds the network stack in `AppDelegate` and sets `NewsAPIClient.shared`.
 - `Models/`
   - `NewsArticle.swift`: Domain model used across views.
 - `Scenes/`
-  - `NewsList/View/NewsListView.swift`: List UI for news.
-  - `NewsList/ViewModel/NewsListViewModel.swift`: ViewModel for fetching + persisting articles.
-  - `Favorites/View/FavoritesView.swift`: List UI for favorites-only view.
-  - `Favorites/ViewModel/FavoritesViewModel.swift`: ViewModel reading favorites from storage.
+  - `NewsList/View/NewsListView.swift`: News list UI.
+  - `NewsList/ViewModel/NewsListViewModel.swift`: Fetches latest headlines via `NewsAPIClient.watch`, maps to `NewsArticle`, and interacts with storage for toggles.
+  - `Favorites/View/FavoritesView.swift`: Favorites-only UI.
+  - `Favorites/ViewModel/FavoritesViewModel.swift`: Loads favorite articles from storage.
+  - `ReadLater/View/ReadLaterView.swift`: Read Later list UI.
+  - `ReadLater/ViewModel/ReadLaterViewModel.swift`: Loads Read Later articles from storage.
 - `ViewComponents/`
-  - `ArticleRowView.swift`: Row component with a star toggle.
+  - `ArticleRowView.swift`: Row with Favorite and Read Later toggles.
 - `Services/`
-  - `BasicNewsService.swift`: Simple fetch using URLSession; uses top-headlines.
+  - `NewsAPIClient/NewsAPIClient.swift`: Thin wrapper around `BuddiesNetwork` with async/await and streaming (`watch`).
+  - `NewsAPIClient/NewsInterceptorProvider.swift`: Interceptor chain: API key injection, retry, network fetch, JSON decoding (ISO-8601 dates).
+  - `BasicNewsService.swift`: Temporary stub for simple fetching; currently used only as a dependency placeholder for the Read Later scene.
 - `Network/`
-  - `EndpointManager.swift`: Base URL + path constants.
-  - `AccessProvider.swift`: Reads `NEWS_API_KEY` from environment.
-  - `NewsAPIModels.swift`: Request/response DTOs for NewsAPI.
+  - `EndpointManager.swift`: Endpoints (`everything`, `top-headlines`) and hosts (`prod` → `https://newsapi.org/v2`).
+  - `AccessProvider.swift`: Reads `NEWS_API_KEY` from process environment.
+  - `NewsAPIModels.swift`: Request/response DTOs (`NewsRequest`, `NewsDataResponse`).
 - `Storage/`
-  - `UserDefaultsManager.swift`: Typed wrapper for `UserDefaults` (Codable + PropertyList types).
-  - `ArticlesDataManager.swift`: Abstraction to save/load `[NewsArticle]` (UserDefaults-backed).
-  - `NewsStorage.swift`: Protocol the app depends on (persist/load + favorites API).
-  - `UserDefaultsNewsStorage.swift`: Concrete `NewsStorage` using `UserDefaultsManager` + `ArticlesDataManager`.
+  - `CoreData/Manager/CoreDataManager.swift`: Loads `ArticleDatabase` model, configures SQLite store, and exposes a background `NSManagedObjectContext`.
+  - `CoreData/NewsDataStorage/Protocols/NewsStorageProtocol.swift`: Storage abstraction used by ViewModels.
+  - `CoreData/NewsDataStorage/CoreDataNewsStorage.swift`: Concrete implementation using `ArticleEntity` with `isFavorite` and `isReadLater` flags.
+  - `ArticleDatabase.xcdatamodeld`: Core Data model containing `ArticleEntity`.
 
 ---
 
-### Data Flow (Lesson 2)
+### Data Flow
 - News tab
-  - `NewsListViewModel.refresh()` → `BasicNewsService.fetchLatest(query:page:pageSize:)`
-  - Maps response to `[NewsArticle]` → `NewsStorage.saveArticles` (UserDefaults)
-  - UI lists `articles`; star toggles call `NewsStorage.toggleFavorite(id:)`.
+  - On init: loads cached articles from Core Data: `storage.loadArticles()`.
+  - On refresh: creates `LatestFetchRequest(query:nil, page:1, pageSize:10, country:"us")` and calls `NewsAPIClient.watch` with cache policy `.returnCacheDataAndFetch`.
+  - Maps network response to `[NewsArticle]` for display. Toggling Favorite/Read Later persists to Core Data; if an article is not yet stored, it is saved first.
 - Favorites tab
-  - `FavoritesViewModel` loads all articles from storage, filters by favorite IDs
-  - The list is storage-only (no network); updates immediately when toggled.
+  - Loads favorite articles directly from Core Data: `storage.loadFavoriteArticles()`.
+- Read Later tab
+  - Loads read-later articles directly from Core Data: `storage.loadReadLaterArticles()`.
 
 Edge cases handled:
-- No API key present → shows demo placeholders (no network call).
-- Failed decode/read from storage → falls back to default values.
+- Missing API key → network request fails; the UI remains on cached data if available.
+- Core Data operations are guarded; failures surface as simple error messages and logs.
 
 ---
 
-### What Students Implement in This Lesson
-- Fill in the `ArticlesDataManager` methods:
-  - `saveArticles(_:)` – encode and persist the array of `NewsArticle` using `UserDefaultsManager`.
-  - `loadArticles()` – decode and return the saved array (or empty if absent/decoding fails).
-- Optionally extend `BasicNewsService` to support search (`q`) and pagination.
-- Wire small UI improvements (e.g., empty/error states copy, badges, etc.).
-
-Hints:
-- See `UserDefaultsManager` for typed key usage with Codable.
-- `UserDefaultsNewsStorage` already delegates article persistence to `ArticlesDataManager` and manages favorite IDs separately.
+### Networking
+- Client: `NewsAPIClient` built on `BuddiesNetwork`.
+- Interceptors: `ApiKeyProviderInterceptor` (injects `x-api-key` from `AccessProvider`), `MaxRetryInterceptor`, `NetworkFetchInterceptor`, `NewsJSONDecodingInterceptor` (ISO-8601 dates).
+- Endpoints: `EndpointManager.Path.topHeadlines.url()` builds `https://newsapi.org/v2/top-headlines` by default.
+- Requests: `LatestFetchRequest` encodes `query`, `page`, `pageSize`, `country` into the HTTP operation.
+- Streaming: `.watch(..., cachePolicy: .returnCacheDataAndFetch)` yields cached data first (if any), then server data.
 
 ---
 
-### Networking (Temporary – to be replaced in a later lesson)
-- Endpoint: `top-headlines` with `country=us` using `EndpointManager`.
-- API key header: `x-api-key: <NEWS_API_KEY>` (set in Scheme → Environment Variables).
-- Decoder: `JSONDecoder` with `iso8601` for `publishedAt`.
-- If you want to switch to `everything` or add filters (e.g., `q`, `category`), adjust `BasicNewsService` query items.
+### Storage
+- Abstraction: `NewsStorageProtocol` provides save/load, favorites API, read-later API, filtered loads, and deletion.
+- Implementation: `CoreDataNewsStorage` maps `ArticleEntity` ⇄ `NewsArticle` and preserves `isFavorite` / `isReadLater` flags on updates.
+- Identifiers: Storage keys use `article.url.absoluteString` when available; otherwise the article `id`.
 
 ---
 
-### Favorites
-- Stored as a `Set<String>` of article IDs (persisted via `UserDefaults` as an array of strings).
-- Tapping the star toggles membership in that set and updates the list immediately.
-
----
-
-### Known Limitations (by design for Lesson 2)
-- Minimal error UI; only simple messages.
-- No infinite pagination or caching policies yet.
-- Storage is `UserDefaults` only (Core Data comes next lesson).
+### Known Limitations
+- No pagination or search on the News tab yet.
+- Error UI is minimal; many failures are logged.
+- `BasicNewsService` is a stub; network fetches in the News tab use `NewsAPIClient` instead.
+- The QA host in `EndpointManager.Hosts` points to a placeholder and is not used.
 
 ---
 
 ### Troubleshooting
-- 401/403 or empty list: ensure `NEWS_API_KEY` is set under the scheme and valid.
-- Empty Favorites after relaunch: ensure the app has write permission (simulator usually fine), and favorites were toggled at least once.
-- Date decoding errors: NewsAPI uses ISO-8601; we use `JSONDecoder.dateDecodingStrategy = .iso8601`.
+- 401/403 or "API KEY not found": ensure `NEWS_API_KEY` is set in the scheme and valid.
+- Empty lists: verify you have network connectivity and that your API key is authorized for NewsAPI.
+- Date decoding errors: the decoder uses ISO-8601; responses must match that format.
 
 ---
 
-### Next Lessons
-- Replace `UserDefaultsNewsStorage` with a Core Data-backed implementation.
-- Replace `BasicNewsService` with a full network layer (endpoint abstraction, request builder, error mapping, tests).
-- Add pagination, pull-to-refresh states, and offline-first behavior.
-
+### Next Steps (Ideas)
+- Add pagination and search (e.g., `everything` endpoint with `q`).
+- Improve error and empty states; add offline-first behavior.
+- Move `NEWS_API_KEY` to Keychain and add an onboarding prompt.
+- Unit tests for storage and networking layers.
 
