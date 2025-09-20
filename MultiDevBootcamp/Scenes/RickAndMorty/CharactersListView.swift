@@ -17,7 +17,11 @@ struct CharactersListView: View {
     var body: some View {
         List {
             ForEach(viewModel.characters) { character in
-                Text(character.name)
+                RMCharacterRowView(
+                    character: character,
+                    isFavorite: .constant(false),
+                    isWatchlisted: .constant(false)
+                )
             }
         }
         .overlay(alignment: .center) {

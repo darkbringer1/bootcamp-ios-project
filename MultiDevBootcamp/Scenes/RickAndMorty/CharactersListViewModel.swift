@@ -17,8 +17,8 @@ final class CharactersListViewModel: ObservableObject {
     init(service: NewsAPIClient = .shared) {
         self.service = service
     }
-//    DispatchQueue.main.async(execute: <#T##DispatchWorkItem#>) GCD
-//    @MainActor
+    
+    @MainActor
     func fetchCharacters() async {
         let request: RMCharactersRequest = .init()
         
@@ -31,7 +31,6 @@ final class CharactersListViewModel: ObservableObject {
             errorMessage = error.localizedDescription
         }
     }
-    
 }
 
 extension CharactersListViewModel {
@@ -74,4 +73,4 @@ struct RMCharacter: Decodable, Identifiable {
         let url: String
     }
     
-    }
+}
