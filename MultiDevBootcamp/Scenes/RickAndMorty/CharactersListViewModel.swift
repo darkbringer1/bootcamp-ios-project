@@ -12,6 +12,8 @@ final class CharactersListViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
     @Published var characters: [RMCharacter] = []
+    let favCharsManager: RMFavoritesUserDefaultsManager = .init()
+    
     private let service: NewsAPIClient
     
     init(service: NewsAPIClient = .shared) {
@@ -31,6 +33,25 @@ final class CharactersListViewModel: ObservableObject {
             errorMessage = error.localizedDescription
         }
     }
+    
+    func saveChar(id: Int) {
+        favCharsManager.saveChar(id: id)
+        objectWillChange.send()
+    }
+    
+    func getChars() -> [Int] {
+        favCharsManager.getChars()
+    }
+    
+    func checkFav(id: Int) -> Bool {
+        favCharsManager.checkFav(id: id)
+    }
+    
+    func removeFav(id: Int) {
+        favCharsManager.removeFav(id: id)
+        objectWillChange.send()
+    }
+    
 }
 
 extension CharactersListViewModel {

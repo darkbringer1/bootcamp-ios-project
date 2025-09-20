@@ -19,7 +19,15 @@ struct CharactersListView: View {
             ForEach(viewModel.characters) { character in
                 RMCharacterRowView(
                     character: character,
-                    isFavorite: .constant(false),
+                    isFavorite: .init(get: {
+                        viewModel.checkFav(id: character.id)
+                    }, set: { newValue in
+                        if newValue {
+                            viewModel.saveChar(id: character.id)
+                        } else {
+                            viewModel.removeFav(id: character.id)
+                        }
+                    }),
                     isWatchlisted: .constant(false)
                 )
             }
