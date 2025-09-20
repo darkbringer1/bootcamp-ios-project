@@ -19,6 +19,21 @@ enum EndpointManager {
             }
         }
     }
+    
+    enum RMPath: Endpoint {
+        case character
+        case characterDetail(id: Int)
+        
+        var value: String {
+            switch self {
+            case .character:
+                return "character"
+            case .characterDetail(let id):
+                return "character/\(id)"
+            }
+        }
+    }
+    
 }
 
 public enum Hosts {
@@ -30,12 +45,19 @@ public enum Hosts {
         static let baseUrl: URL = URL(string: "google.com")!
     }
     
+    struct RMHost: Host {
+        static let baseUrl: URL = URL(string: "https://rickandmortyapi.com/api")!
+    }
+    
     case prod
     case qa
+    case rmHost
+    
     var env: Host {
         switch self {
         case .prod: Prod()
         case .qa: QA()
+        case .rmHost: RMHost()
         }
     }
 }

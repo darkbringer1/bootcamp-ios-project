@@ -18,6 +18,12 @@ struct ContentView: View {
     
     var body: some View {
         TabView {
+            
+            NavigationStack {
+                CharactersListView(viewModel: .init())
+            }
+            .tabItem { Label("R&M", systemImage: "person")  }
+            
             NavigationStack {
                 NewsListView(
                     viewModel: NewsListViewModel(

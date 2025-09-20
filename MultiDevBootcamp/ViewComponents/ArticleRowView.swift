@@ -67,7 +67,9 @@ struct ArticleRowView: View {
                 .buttonStyle(.plain)
             }
         }
+
         .contentShape(Rectangle())
+        .background(Color.random())
     }
 }
 

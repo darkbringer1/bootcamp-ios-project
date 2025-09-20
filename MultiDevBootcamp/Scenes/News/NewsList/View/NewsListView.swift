@@ -35,6 +35,7 @@ struct NewsListView: View {
                 )
             }
         }
+        .background(Color.random())
         .overlay(alignment: .center) {
             if viewModel.isLoading {
                 ProgressView("Loading…")
