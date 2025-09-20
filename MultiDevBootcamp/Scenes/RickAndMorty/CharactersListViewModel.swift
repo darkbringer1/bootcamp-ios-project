@@ -12,6 +12,8 @@ final class CharactersListViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
     @Published var characters: [RMCharacter] = []
+    @Published var searchText: String = ""
+    
     let favCharsManager: RMFavoritesUserDefaultsManager = .init()
     
     private let service: NewsAPIClient
@@ -26,6 +28,20 @@ final class CharactersListViewModel: ObservableObject {
         
         do {
             for try await response in service.watch(request) {
+                characters = response.results
+            }
+        } catch {
+            print("Error fetching characters: \(error)")
+            errorMessage = error.localizedDescription
+        }
+    }
+    
+    @MainActor
+    func searchCharacters() async {
+        let req = RMCharactersRequest(name: searchText)
+        
+        do {
+            for try await response in service.watch(req, cachePolicy: .fetchIgnoringCacheCompletely) {
                 characters = response.results
             }
         } catch {
@@ -56,6 +72,7 @@ final class CharactersListViewModel: ObservableObject {
 
 extension CharactersListViewModel {
     struct RMCharactersRequest: Requestable {
+        var name: String?
         struct InfoModel: Decodable {
             var count: Int
             var pages: Int

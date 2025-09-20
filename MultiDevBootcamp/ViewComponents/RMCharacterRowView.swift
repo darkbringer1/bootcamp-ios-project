@@ -10,7 +10,6 @@ import SwiftUI
 struct RMCharacterRowView: View {
     let character: RMCharacter
     @Binding var isFavorite: Bool
-    @Binding var isWatchlisted: Bool
 
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
@@ -57,24 +56,14 @@ struct RMCharacterRowView: View {
             }
 
             Spacer(minLength: 8)
-
-            VStack(alignment: .trailing, spacing: 8) {
-                Button {
-                    isFavorite.toggle()
-                } label: {
-                    Image(systemName: isFavorite ? "star.fill" : "star")
-                        .foregroundStyle(isFavorite ? .yellow : .gray)
-                }
-                .buttonStyle(.plain)
-
-                Button {
-                    isWatchlisted.toggle()
-                } label: {
-                    Image(systemName: "bookmark")
-                        .foregroundStyle(isWatchlisted ? .blue : .gray)
-                }
-                .buttonStyle(.plain)
+            
+            Button {
+                isFavorite.toggle()
+            } label: {
+                Image(systemName: isFavorite ? "star.fill" : "star")
+                    .foregroundStyle(isFavorite ? .yellow : .gray)
             }
+            .buttonStyle(.plain)
         }
         .contentShape(Rectangle())
     }
@@ -111,8 +100,7 @@ private struct StatusPill: View {
 #Preview {
     RMCharacterRowView(
         character: .placeholder,
-        isFavorite: .constant(true),
-        isWatchlisted: .constant(false)
+        isFavorite: .constant(true)
     )
     .padding()
 }

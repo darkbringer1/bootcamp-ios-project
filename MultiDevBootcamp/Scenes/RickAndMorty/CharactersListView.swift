@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CharactersListView: View {
     @StateObject private var viewModel: CharactersListViewModel
-    @State var searchVal: String = ""
+    @State var isPresentedSearchList: Bool = false
     init(viewModel: CharactersListViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
@@ -27,8 +27,7 @@ struct CharactersListView: View {
                         } else {
                             viewModel.removeFav(id: character.id)
                         }
-                    }),
-                    isWatchlisted: .constant(false)
+                    })
                 )
             }
         }
@@ -43,6 +42,8 @@ struct CharactersListView: View {
                         .foregroundStyle(.secondary)
                 }
                 .padding()
+            } else if viewModel.characters.isEmpty && !viewModel.searchText.isEmpty {
+                ContentUnavailableView("Could not find character \(viewModel.searchText)", systemImage: "exclamation")
             } else if viewModel.characters.isEmpty {
                 ContentUnavailableView("No Characters", systemImage: "person")
             }
@@ -54,7 +55,14 @@ struct CharactersListView: View {
         .refreshable {
             await viewModel.fetchCharacters()
         }
-        .searchable(text: $searchVal)
+        .searchable(text: $viewModel.searchText)
+        .onSubmit(of: .search) {
+            if !viewModel.isLoading {
+                Task {
+                    await viewModel.searchCharacters()
+                }
+            }
+        }
     }
 }
 

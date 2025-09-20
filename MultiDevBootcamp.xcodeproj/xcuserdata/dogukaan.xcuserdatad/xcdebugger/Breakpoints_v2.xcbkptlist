@@ -23,17 +23,135 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "629ACFFE-13FC-4C8C-AC68-BE113F6CE6F4"
+            uuid = "7BD48C9C-6183-4830-8B90-81A46AA1E830"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MultiDevBootcamp/Scenes/RickAndMorty/CharactersListViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "30"
+            endingLineNumber = "30"
+            landmarkName = "fetchCharacters()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "7BD48C9C-6183-4830-8B90-81A46AA1E830 - e0c6952fe509dfbe"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for MultiDevBootcamp.CharactersListViewModel.fetchCharacters() async -&gt; ()"
+                  moduleName = "MultiDevBootcamp.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/dogukaan/Desktop/development/PersonalProjects/MultiDevBootcamp/MultiDevBootcamp/Scenes/RickAndMorty/CharactersListViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "30"
+                  endingLineNumber = "30">
+               </Location>
+               <Location
+                  uuid = "7BD48C9C-6183-4830-8B90-81A46AA1E830 - 5ddd3f19b6cb9d5d"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(2) await resume partial function for MultiDevBootcamp.CharactersListViewModel.fetchCharacters() async -&gt; ()"
+                  moduleName = "MultiDevBootcamp.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/dogukaan/Desktop/development/PersonalProjects/MultiDevBootcamp/MultiDevBootcamp/Scenes/RickAndMorty/CharactersListViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "30"
+                  endingLineNumber = "30">
+               </Location>
+               <Location
+                  uuid = "7BD48C9C-6183-4830-8B90-81A46AA1E830 - 1814a3c29e2e9bbc"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for MultiDevBootcamp.CharactersListViewModel.fetchCharacters() async -&gt; ()"
+                  moduleName = "MultiDevBootcamp.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/dogukaan/Desktop/development/PersonalProjects/MultiDevBootcamp/MultiDevBootcamp/Scenes/RickAndMorty/CharactersListViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "30"
+                  endingLineNumber = "30">
+               </Location>
+               <Location
+                  uuid = "7BD48C9C-6183-4830-8B90-81A46AA1E830 - 1814a3c29e2e9bbc"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for MultiDevBootcamp.CharactersListViewModel.fetchCharacters() async -&gt; ()"
+                  moduleName = "MultiDevBootcamp.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/dogukaan/Desktop/development/PersonalProjects/MultiDevBootcamp/MultiDevBootcamp/Scenes/RickAndMorty/CharactersListViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "30"
+                  endingLineNumber = "30">
+               </Location>
+               <Location
+                  uuid = "7BD48C9C-6183-4830-8B90-81A46AA1E830 - 4bfdd92b1b5335a3"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(4) suspend resume partial function for MultiDevBootcamp.CharactersListViewModel.fetchCharacters() async -&gt; ()"
+                  moduleName = "MultiDevBootcamp.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/dogukaan/Desktop/development/PersonalProjects/MultiDevBootcamp/MultiDevBootcamp/Scenes/RickAndMorty/CharactersListViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "30"
+                  endingLineNumber = "30">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "EEBD55D0-299F-485B-AA08-FF5695DE9716"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MultiDevBootcamp/Services/NewsAPIClient/NewsAPIClient.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "69"
-            endingLineNumber = "69"
+            startingLineNumber = "64"
+            endingLineNumber = "64"
             landmarkName = "watch(_:cachePolicy:dispatchQueue:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "EEBD55D0-299F-485B-AA08-FF5695DE9716 - 630c08c18e0a39bf"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MultiDevBootcamp.NewsAPIClient.watch&lt;&#x3c4;_0_0 where &#x3c4;_0_0: BuddiesNetwork.Requestable&gt;(_: &#x3c4;_0_0, cachePolicy: BuddiesNetwork.CachePolicy, dispatchQueue: __C.OS_dispatch_queue) -&gt; Swift.AsyncThrowingStream&lt;&#x3c4;_0_0.Data, Swift.Error&gt;"
+                  moduleName = "MultiDevBootcamp.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/dogukaan/Desktop/development/PersonalProjects/MultiDevBootcamp/MultiDevBootcamp/Services/NewsAPIClient/NewsAPIClient.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "64"
+                  endingLineNumber = "64">
+               </Location>
+               <Location
+                  uuid = "EEBD55D0-299F-485B-AA08-FF5695DE9716 - acf82228f9adeffe"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.AsyncThrowingStream&lt;&#x3c4;_0_0.Data, Swift.Error&gt;.Continuation) -&gt; () in MultiDevBootcamp.NewsAPIClient.watch&lt;&#x3c4;_0_0 where &#x3c4;_0_0: BuddiesNetwork.Requestable&gt;(_: &#x3c4;_0_0, cachePolicy: BuddiesNetwork.CachePolicy, dispatchQueue: __C.OS_dispatch_queue) -&gt; Swift.AsyncThrowingStream&lt;&#x3c4;_0_0.Data, Swift.Error&gt;"
+                  moduleName = "MultiDevBootcamp.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/dogukaan/Desktop/development/PersonalProjects/MultiDevBootcamp/MultiDevBootcamp/Services/NewsAPIClient/NewsAPIClient.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "64"
+                  endingLineNumber = "64">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
